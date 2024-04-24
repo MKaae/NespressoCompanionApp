@@ -1,12 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+
+import { IntroScreen } from "./screens/IntroScreen/IntroScreen.js"
+import { Login } from "./screens/Login/Login.js"
+import { Signup } from "./screens/Signup/Signup.js"
+import { Home } from "./screens/Home/Home.js"
+import { CapsuleOverview } from "./screens/CapsuleOverview/CapsuleOverview.js"
+import { CapsuleScreen } from "./screens/CapsuleScreen/CapsuleScreen.js"
+import { CapsuleRating } from "./screens/CapsuleRating/CapsuleRating.js"
+import { Profile } from "./screens/Profile/Profile.js"
+import { Stores } from "./screens/Stores/Stores.js"
 
 export default function App() {
+  const Stack = createNativeStackNavigator();
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRoute="IntroScreen">
+        <Stack.Screen name="IntroScreen" component={IntroScreen}/>
+        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Signup" component={Signup}/>
+        <Stack.Screen name="Home" component={Home}/>
+        <Stack.Screen name="CapsuleOverview" component={CapsuleOverview}/>
+        <Stack.Screen name="CapsuleScreen" component={CapsuleScreen}/>
+        <Stack.Screen name="CapsuleRating" component={CapsuleRating}/>
+        <Stack.Screen name="Profile" component={Profile}/>
+        <Stack.Screen name="Stores" component={Stores}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
