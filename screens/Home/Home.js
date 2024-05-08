@@ -163,6 +163,6 @@ const styles = StyleSheet.create({
     },
     profileText: {
         maxWidth: 150,
-        flexWrap: 'true',
+        flexWrap: 'wrap',
     }
 });
