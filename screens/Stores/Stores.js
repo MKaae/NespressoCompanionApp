@@ -3,10 +3,12 @@ import MapView, { Marker } from "react-native-maps";
 import { useState } from "react";
 
 export const Stores = ({navigation, route}) => {
-    const latitude = 56;
-    const longitude = 10.5;
-    const latitudeDelta = 4.5;
-    const longitudeDelta = 4.5;
+    const [region, setRegion] = useState({
+    latitude:56,
+    longitude:10.5,
+    latitudeDelta:4.5,
+    longitudeDelta:4.5,
+    })
 
     const storeLocations = [
         {latitude: 56.149, longitude: 10.2049, title: "Nespresso Boutique Bruuns Galleri"},
@@ -16,15 +18,14 @@ export const Stores = ({navigation, route}) => {
     ]
 
     function moveToLocation(id){
-        if(1){
-            latitude = 56.149; // Read only men min hjerne er færdig jeg stopper for i dag
-            longitude = 10.2049;
-        } else if (2){
-
-        } else if (3) {
-
-        } else if (4) {
-
+        if(id === 1){
+            setRegion({latitude: 56.149, longitude:10.2049, latitudeDelta:0.1, longitudeDelta:0.1})
+        } else if (id === 2){
+            setRegion({latitude: 55.67908, longitude:12.45843, latitudeDelta:0.1, longitudeDelta:0.1})
+        } else if (id === 3) {
+            setRegion({latitude: 55.679976, longitude:12.582147, latitudeDelta:0.1, longitudeDelta:0.1})
+        } else if (id === 4) {
+            setRegion({latitude: 55.62984, longitude:12.57785, latitudeDelta:0.1, longitudeDelta:0.1})
         }
     }
 
@@ -33,12 +34,7 @@ export const Stores = ({navigation, route}) => {
             <View style={styles.mapContainer}>
                 <MapView
                     style={styles.map}
-                    region={{
-                        latitude,
-                        longitude,
-                        latitudeDelta,
-                        longitudeDelta,
-                      }}
+                    region={region}
                 >
                 {storeLocations.map((location, index) => (
                 <Marker
