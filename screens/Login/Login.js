@@ -27,18 +27,20 @@ export const Login = ({ navigation, route }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [userId, setUserId] = useState(null);
+  const statusContext = useContext(StatusContext);
 
   useEffect(() => {
     const auth_ = getAuth();
     const unsubscribe = onAuthStateChanged(auth_, (currentUser) => {
       if (currentUser) {
         setUserId(currentUser.uid);
+        statusContext.setCurrentUser(currentUser);
       } else {
         setUserId(null);
+        statusContext.setCurrentUser(null);
       }
     });
-
-    return () => unsubscribe();
+    return () => unsubscribe(); 
   }, []);
 
   async function login() {
@@ -46,11 +48,13 @@ export const Login = ({ navigation, route }) => {
     try {
       const newAuth = getAuth();
       const userCredential = await signInWithEmailAndPassword(newAuth, email, password);
-      console.log("logged ind " + userCredential.user.uid);
+      // statusContext.setCurrentUser(userCredential.user.uid);
+      loginAndRouteToHome();
     } catch (error) {}
   }
 
   function loginAndRouteToHome() {
+    console.log("loginAndRouteToHome()");
     navigation.navigate("Home");
   }
 

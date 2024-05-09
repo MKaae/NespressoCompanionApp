@@ -4,7 +4,9 @@ import findStores from "../../assets/findStores.png";
 import seeCapsules from "../../assets/seeCapsules.png";
 import seeRatings from "../../assets/seeRatings.png";
 import updateProfile from "../../assets/updateProfile.png";
+
 import { StatusContext } from "../../context/generalContext.js";
+import { useContext } from "react";
 
 export const Home = ({ navigation, route }) => {
   const statusContext = useContext(StatusContext);
@@ -27,13 +29,18 @@ export const Home = ({ navigation, route }) => {
     navigation.navigate("Stores");
   }
 
-  console.log(statusContext.currentUser);
-
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <View style={styles.rowBox}>
           <View style={styles.textBox}>
+            {statusContext.currentUser && (
+              <>
+                <Text>{statusContext.currentUser.uid}</Text>
+              </>
+            )}
+            {!statusContext.currentUser && <Text>Du er ikke logget på</Text>}
+
             <Text style={styles.homeText}>This is a textbox.</Text>
             <Text style={styles.homeText}>This is a textbox.</Text>
             <Text style={styles.homeText}>This is a textbox.</Text>
