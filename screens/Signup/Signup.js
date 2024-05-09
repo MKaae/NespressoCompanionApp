@@ -12,14 +12,7 @@ import { initializeAuth, getReactNativePersistence, signOut } from "firebase/aut
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 
-let auth;
-if (Platform.OS === "web") {
-    auth = getAuth(app);
-  } else {
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
-  }
+
 
 export const Signup = ({ navigation, route }) => {
   const [email, setEmail] = useState();
@@ -46,7 +39,8 @@ export const Signup = ({ navigation, route }) => {
     console.log("signUp()");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const newAuth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
       console.log("Signed up with: " + userCredential.user.uid);
       signupToLoginRoute();
     } catch (error) {
