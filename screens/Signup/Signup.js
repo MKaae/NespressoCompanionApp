@@ -40,7 +40,7 @@ export const Signup = ({ navigation, route }) => {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
       // Create en collection -> med userCredential.user.uid - collectionNAVN
-      // Collection skal indeholde, navn: string, profilebillede: profile_image/urltostorage, rating-array: [{capsule_id,int}] 
+      // Collection skal indeholde, navn: string, profilebillede: "" : profile_image/urltostorage, rating-array: [{capsule_id,int}] 
       signupToLoginRoute();
     } catch (error) {
       console.log(error);
