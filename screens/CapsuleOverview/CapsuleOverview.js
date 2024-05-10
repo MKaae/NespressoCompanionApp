@@ -35,6 +35,8 @@ export const CapsuleOverview = ({navigation, route}) => {
       return () => clearTimeout(delay);
   }, []);
 
+  // Manuelt opret collection link til storage capsule_url: url, capsule_id: string, name: string, description: string, rating: double
+  // Fetch image collection with all capsules 
   // Den her use effect er til når vi får sat en DB op. Den ovenover er temporary til testdata.
   // useEffect(() => { 
   //   fetch(url) //get call

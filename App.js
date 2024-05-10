@@ -19,7 +19,7 @@ export default function App() {
   const Stack = createNativeStackNavigator();
 
   return (
-    // <StatusContextProvider>
+    <StatusContextProvider>
     <NavigationContainer>
       <Stack.Navigator initialRoute="IntroScreen">
         <Stack.Screen name="IntroScreen" component={IntroScreen} />
@@ -33,7 +33,7 @@ export default function App() {
         <Stack.Screen name="Stores" component={Stores} />
       </Stack.Navigator>
     </NavigationContainer>
-    // </StatusContextProvider>
+    </StatusContextProvider>
   );
 }
 

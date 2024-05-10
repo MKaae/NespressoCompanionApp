@@ -12,17 +12,6 @@ import { initializeAuth, getReactNativePersistence, signOut } from "firebase/aut
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusContext } from "../../context/generalContext.js";
 
-// web
-// device
-// let auth;
-// if (Platform.OS === "web") {
-//   auth = getAuth(app);
-// } else {
-//   auth = initializeAuth(app, {
-//     persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-//   });
-// }
-
 export const Login = ({ navigation, route }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -44,17 +33,14 @@ export const Login = ({ navigation, route }) => {
   }, []);
 
   async function login() {
-    console.log("login()");
     try {
       const newAuth = getAuth();
       const userCredential = await signInWithEmailAndPassword(newAuth, email, password);
-      // statusContext.setCurrentUser(userCredential.user.uid);
       loginAndRouteToHome();
     } catch (error) {}
   }
 
   function loginAndRouteToHome() {
-    console.log("loginAndRouteToHome()");
     navigation.navigate("Home");
   }
 

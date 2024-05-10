@@ -5,12 +5,7 @@ import seeCapsules from "../../assets/seeCapsules.png";
 import seeRatings from "../../assets/seeRatings.png";
 import updateProfile from "../../assets/updateProfile.png";
 
-import { StatusContext } from "../../context/generalContext.js";
-import { useContext } from "react";
-
 export const Home = ({ navigation, route }) => {
-  const statusContext = useContext(StatusContext);
-
   function capsuleOverViewRoute() {
     navigation.navigate("CapsuleOverview");
   }
@@ -20,12 +15,10 @@ export const Home = ({ navigation, route }) => {
   }
 
   function profileRoute() {
-    console.log("profileRoute()");
     navigation.navigate("Profile");
   }
 
   function storesRoute() {
-    console.log("storeRoute()");
     navigation.navigate("Stores");
   }
 

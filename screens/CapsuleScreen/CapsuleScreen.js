@@ -26,6 +26,9 @@ export const CapsuleScreen = ({navigation, route}) => {
         return objects;
       }
       // fake data igen men det burde være klar til at blive sat op. Capsuleoverview har en rigtig fetch useeffect.
+      // fetch capsules with id from all capsules
+      // fetch bruger check rating-array for capsule_id - get rating
+      // post hvis bruger vil ændre rating - opdater bruger rating-array - gem hele capsule % global rating
       useEffect(() => {
         const delay = setTimeout(() => {
           const fakes = setFakeData();

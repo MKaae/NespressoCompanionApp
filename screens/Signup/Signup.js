@@ -36,12 +36,11 @@ export const Signup = ({ navigation, route }) => {
 
 
   async function signup() {
-    console.log("signUp()");
-
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
-      console.log("Signed up with: " + userCredential.user.uid);
+      // Create en collection -> med userCredential.user.uid - collectionNAVN
+      // Collection skal indeholde, navn: string, profilebillede: profile_image/urltostorage, rating-array: [{capsule_id,int}] 
       signupToLoginRoute();
     } catch (error) {
       console.log(error);
