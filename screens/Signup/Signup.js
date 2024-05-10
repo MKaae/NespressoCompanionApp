@@ -36,9 +36,11 @@ export const Signup = ({ navigation, route }) => {
 
 
   async function signup() {
+    console.log("signup()");
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
+      console.log("UID: " + userCredential.user.uid);
       // Create en collection -> med userCredential.user.uid - collectionNAVN
       // Collection skal indeholde, navn: string, profilebillede: profile_image/urltostorage, rating-array: [{capsule_id,int}] 
       signupToLoginRoute();
@@ -49,6 +51,7 @@ export const Signup = ({ navigation, route }) => {
   }
 
   function signupToLoginRoute() {
+    console.log("signupToLoginRoute()");
     navigation.navigate("Login");
   }
 

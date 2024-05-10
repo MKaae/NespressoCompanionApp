@@ -1,11 +1,17 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { useState, useEffect, useContext } from "react";
+
 import PastafarianImage from "../../assets/pastafariantemp.png";
 import findStores from "../../assets/findStores.png";
 import seeCapsules from "../../assets/seeCapsules.png";
 import seeRatings from "../../assets/seeRatings.png";
 import updateProfile from "../../assets/updateProfile.png";
+import { StatusContext } from "../../context/generalContext.js";
+
 
 export const Home = ({ navigation, route }) => {
+  const statusContext = useContext(StatusContext);
+
   function capsuleOverViewRoute() {
     navigation.navigate("CapsuleOverview");
   }
