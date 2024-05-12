@@ -6,7 +6,7 @@ import findStores from "../../assets/findStores.png";
 import seeCapsules from "../../assets/seeCapsules.png";
 import seeRatings from "../../assets/seeRatings.png";
 import updateProfile from "../../assets/updateProfile.png";
-// import { StatusContext } from "../../context/generalContext.js";
+import { StatusContext } from "../../context/generalContext.js";
  
 
 
@@ -34,12 +34,12 @@ export const Home = ({ navigation, route }) => {
       <View style={styles.topRow}>
         <View style={styles.rowBox}>
           <View style={styles.textBox}>
-            {/* {statusContext.currentUser && (
+            {statusContext.currentUser && (
               <>
                 <Text>{statusContext.currentUser.uid}</Text>
               </>
             )}
-            {!statusContext.currentUser && <Text>Du er ikke logget på</Text>} */}
+            {!statusContext.currentUser && <Text>Du er ikke logget på</Text>}
 
             <Text style={styles.homeText}>This is a textbox.</Text>
             <Text style={styles.homeText}>This is a textbox.</Text>
