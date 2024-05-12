@@ -37,6 +37,7 @@ export const Signup = ({ navigation, route }) => {
 
 
   async function signup() {
+    console.log("signup()");
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
@@ -57,6 +58,7 @@ export const Signup = ({ navigation, route }) => {
   }
 
   function signupToLoginRoute() {
+    console.log("signupToLoginRoute()");
     navigation.navigate("Login");
   }
 

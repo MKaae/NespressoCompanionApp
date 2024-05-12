@@ -33,6 +33,7 @@ export const Login = ({ navigation, route }) => {
   }, []);
 
   async function login() {
+    console.log("login()");
     try {
       const newAuth = getAuth();
       const userCredential = await signInWithEmailAndPassword(newAuth, email, password);
@@ -41,6 +42,7 @@ export const Login = ({ navigation, route }) => {
   }
 
   function loginAndRouteToHome() {
+    console.log("loginAndRouteToHome()");
     navigation.navigate("Home");
   }
 
