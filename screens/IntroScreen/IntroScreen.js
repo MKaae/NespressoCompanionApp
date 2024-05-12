@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Button, Platform } from "react-native";
 import { app, database } from "../../config/firebase.js";
-import { StatusContext } from "../../context/generalContext.js";
+// import { StatusContext } from "../../context/generalContext.js";
 
 import { getAuth } from "firebase/auth";
 import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
@@ -25,6 +25,7 @@ export const IntroScreen = ({ navigation, route }) => {
   }
 
   return (
+    // <StatusContext.Provider value={{ currentUser: null }}>
     <View style={styles.container}>
       <View>
         <Text style={styles.introText}>Welcome to the Nespresso Companion App</Text>
@@ -40,6 +41,7 @@ export const IntroScreen = ({ navigation, route }) => {
         </View>
       </View>
     </View>
+    // </StatusContext.Provider>
   );
 };
 

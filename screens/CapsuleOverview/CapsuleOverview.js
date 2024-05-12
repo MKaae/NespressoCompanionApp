@@ -1,50 +1,33 @@
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image } from "react-native";
 import { useState, useEffect } from "react";
-import fake1 from "../../assets/fakeImageLocation/fake1.png";
-import fake2 from "../../assets/fakeImageLocation/fake2.png";
-import fake3 from "../../assets/fakeImageLocation/fake3.png";
-import fake4 from "../../assets/fakeImageLocation/fake4.png";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { collection, setDoc, doc, getDocs } from "firebase/firestore";
+import { app, database } from "../../config/firebase.js";
+
 
 export const CapsuleOverview = ({navigation, route}) => {
   const [text, setText] = useState();
-  const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
-
-  function setFakeData(){
-    const tempObjects = [
-      {id: 1, img:fake1},
-      {id: 2, img:fake2},
-      {id: 3, img:fake3},
-      {id: 4, img:fake4},
-    ]
-    const objects = tempObjects.map(item => {
-      return {
-        id: item.id,
-        img: item.img
-      };
-    });
-    return objects;
-  }
-  // har lavet fake delay for at simulere et fetchkald så vi kan se hvordan det ser ud.
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      const fakes = setFakeData();
-      setData(fakes);
-      setLoading(false);
-    }, 2000);
-      return () => clearTimeout(delay);
-  }, []);
+  const [capsules, setCapsules] = useState([]);
 
   // Manuelt opret collection link til storage capsule_url: url, capsule_id: string, name: string, description: string, rating: double
   // Fetch image collection with all capsules 
-  // Den her use effect er til når vi får sat en DB op. Den ovenover er temporary til testdata.
-  // useEffect(() => { 
-  //   fetch(url) //get call
-  //     .then((response) => response.json()) 
-  //     .then((json) => setData(json)) 
-  //     .catch((error) => console.log(error)) 
-  //     .finally(() => setLoading(false)) 
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const capsulesCollection = collection(database, "capsules");
+        const capsulesSnapshot = await getDocs(capsulesCollection);
+        const capsulesData = capsulesSnapshot.docs.map(doc => doc.data());
+        setCapsules(capsulesData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching capsules:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   function capsuleScreenRoute(id){
     navigation.navigate("CapsuleScreen", {id: id});
@@ -59,20 +42,25 @@ export const CapsuleOverview = ({navigation, route}) => {
         placeholder="Search here"
         style={styles.input}
       />
-      <ScrollView contentContainerStyle={styles.iconBoxesContainer}> 
-      {loading ? ( // ternary operator for at checke om loading er true, false
-        <Text> Loading...</Text>
-      ) : (
-        data.map((icon) => { // mapper dataen
-          return ( // react kræver man bruger en key for at holde styr på vinduerne 
-          // Der mangler tydeligvis lige at sætte ID ind i capsuleScreenRoute men ikke lige nået der til endnu resten virker.
-          // Problemet er bare at den skal loade et fake id fra den næste side som jeg ikke kan har ingen data -> fake igen i guess
-            <TouchableOpacity onPress={() => capsuleScreenRoute(icon.id)} key={icon.id} style={styles.iconBox}> 
-              <Image source={icon.img} style={styles.img}/>
-            </TouchableOpacity>
-          )
-        })
-      )}
+      <ScrollView contentContainerStyle={styles.iconBoxContainer}> 
+      {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          capsules[0].capsules.map((capsule, index) => (
+            <View key={index}>
+              <View style={styles.textContainer}>
+                <Text>{capsule.name}</Text>
+                <Text>{capsule.description}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => capsuleScreenRoute(capsule.id)}
+                style={styles.iconBox}
+              >
+                <Image source={{ uri: capsule.img_url }} style={styles.img} />
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   )
@@ -82,7 +70,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  iconBoxesContainer: {
+  iconBoxContainer: {
     minHeight: '100%',
     backgroundColor: 'lightblue',
     justifyContent: 'center',
@@ -105,5 +93,46 @@ const styles = StyleSheet.create({
   img: {
     height: '100%',
     width: '100%',
+  },
+  textContainer: {
+    flex: 0,
+    alignItems: 'center',
+    margin: 10,
   }
 });
+
+
+
+// THIS IS FOR YOU STEFFEN ONLY RUN ON YOUR COMPUTER THEN DELETE INSTANTLY 
+
+  // useEffect(() => {
+  //   const fetchCapsules = async () => {
+  //     try {
+  //       const storage = getStorage();
+  //       const storageRef = ref(storage);
+  //       const result = await listAll(storageRef);
+  //       const capsulesData = await Promise.all(result.items.map(async (itemRef, index) => {
+  //         const imgURL = await getDownloadURL(itemRef);
+  //         const capsule_name = itemRef.name.split(".")[0];
+  //         return {
+  //           id: index, // Use the index as the ID
+  //           name: capsule_name, // Set the name as required
+  //           flavor: "",
+  //           description: "", // Set the description as required
+  //           img_url: imgURL,
+  //           rating: 0 // Set the initial rating
+  //         };
+  //       }));
+  //       await setDoc(doc(collection(database, "capsules"), "allCapsules"), {
+  //         capsules: capsulesData
+  //       });
+  //       console.log("All capsules document created successfully!");
+  //     } catch (error) {
+  //       console.error("Error creating all capsules document:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   fetchCapsules();
+  // }, []);

@@ -11,6 +11,7 @@ import {
 import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
+import { collection, setDoc, doc } from "firebase/firestore"
 
 
 
@@ -39,6 +40,13 @@ export const Signup = ({ navigation, route }) => {
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
+      const userId = userCredential.user.uid;
+      
+      await setDoc(doc(database, "users", userId), {
+        name: "",
+        profileImage: "",
+        ratingArray: []
+      });
       // Create en collection -> med userCredential.user.uid - collectionNAVN
       // Collection skal indeholde, navn: string, profilebillede: "" : profile_image/urltostorage, rating-array: [{capsule_id,int}] 
       signupToLoginRoute();

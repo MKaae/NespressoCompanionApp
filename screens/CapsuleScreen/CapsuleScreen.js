@@ -1,61 +1,59 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import { useState, useEffect } from "react";
-import fake1 from "../../assets/fakeImageLocation/fake1.png";
-import fake2 from "../../assets/fakeImageLocation/fake2.png";
-import fake3 from "../../assets/fakeImageLocation/fake3.png";
-import fake4 from "../../assets/fakeImageLocation/fake4.png";
+import { database } from "../../config/firebase.js"
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { collection, setDoc, doc, getDoc } from "firebase/firestore";
+
 
 export const CapsuleScreen = ({navigation, route}) => {
-    const [data, setData] = useState();
     const [loading, setLoading] = useState(true);
+    const [capsuleData, setCapsuleData] = useState(null);
 
-    function setFakeData(){
-        const tempObjects = [
-          {id: 1, img:fake1, description: "This is a fartblossom1, there are many fartblossoms like it, but this is the only fartblossom like this."},
-          {id: 2, img:fake2, description: "This is a fartblossom2, there are many fartblossoms like it, but this is the only fartblossom like this."},
-          {id: 3, img:fake3, description: "This is a fartblossom3, there are many fartblossoms like it, but this is the only fartblossom like this."},
-          {id: 4, img:fake4, description: "This is a fartblossom4, there are many fartblossoms like it, but this is the only fartblossom like this."},
-        ]
-        const objects = tempObjects.map(item => {
-          return {
-            id: item.id,
-            img: item.img,
-            description: item.description
-          };
-        });
-        return objects;
-      }
-      // fake data igen men det burde være klar til at blive sat op. Capsuleoverview har en rigtig fetch useeffect.
-      // fetch capsules with id from all capsules
-      // fetch bruger check rating-array for capsule_id - get rating
-      // post hvis bruger vil ændre rating - opdater bruger rating-array - gem hele capsule % global rating
-      useEffect(() => {
-        const delay = setTimeout(() => {
-          const fakes = setFakeData();
-          setData(fakes.find(item => item.id === route.params?.id));
-          setLoading(false);
-        }, 2000);
-          return () => clearTimeout(delay);
-      }, [route.params?.id]);
+    useEffect(() => {
+        const fetchCapsuleData = async () => {
+            try {
+                const capsuleRef = doc(database, "capsules", "allCapsules");
+                const capsuleDoc = await getDoc(capsuleRef);
+                const allCapsules = capsuleDoc.data().capsules;
+                const foundCapsule = allCapsules.find(capsule => capsule.id === route.params.id);
+                if (foundCapsule) {
+                    setCapsuleData(foundCapsule);
+                } else {
+                    console.error("Capsule not found.");
+                }
+            } catch (error) {
+                console.error("Error fetching capsule data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (route.params?.id) {
+            fetchCapsuleData();
+        }
+    }, [route.params?.id]);
 
     return (
         <View style={styles.container}>
-            {loading ? ( 
-                <Text> Loading...</Text>
+            {loading ? (
+                <Text>Loading...</Text>
             ) : (
-                <View>
-                    <View style={styles.imgContainer}>
-                        <Image source={data.img} style={styles.img}/>
+                capsuleData ? (
+                    <View style={styles.contentContainer}>
+                        <View style={styles.imgContainer}>
+                            <Image source={{ uri: capsuleData.img_url }} style={styles.img} />
+                        </View>
+                        <Text style={styles.textBox}>Description: {capsuleData.description}</Text>
+                        <Text style={styles.textBox}>Rating: {capsuleData.rating}/5</Text>
                     </View>
-                    <Text style={styles.textBox}>{data.description}</Text>
-                    <Text style={styles.textBox}>{data.description}</Text>
-                    <Text style={styles.textBox}>{data.description}</Text>
-                    <Text style={styles.textBox}>{data.description}</Text>
-                </View>
+                ) : (
+                    <Text>Capsule not found.</Text>
+                )
             )}
         </View>
-    )
-}
+    );
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -79,5 +77,9 @@ const styles = StyleSheet.create({
     img: {
         height: '100%',
         width: '100%',
+    },
+    contentContainer: {
+        alignItems: 'center',
+        margin: 10,
     }
 });
