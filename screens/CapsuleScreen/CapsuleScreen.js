@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { database } from "../../config/firebase.js"
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { collection, setDoc, doc, getDoc } from "firebase/firestore";
+import StarRating from "react-native-star-rating-widget";
 
 
 export const CapsuleScreen = ({navigation, route}) => {
     const [loading, setLoading] = useState(true);
     const [capsuleData, setCapsuleData] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [globalRating, setGlobalRating] = useState(0);
 
     useEffect(() => {
         const fetchCapsuleData = async () => {
@@ -40,11 +43,19 @@ export const CapsuleScreen = ({navigation, route}) => {
             ) : (
                 capsuleData ? (
                     <View style={styles.contentContainer}>
+                        <Text>Global rating of this product</Text>
+                        <StarRating 
+                            rating={capsuleData.rating}
+                        />
+                        <Text style={styles.textBox}>{capsuleData.description}</Text>
                         <View style={styles.imgContainer}>
                             <Image source={{ uri: capsuleData.img_url }} style={styles.img} />
                         </View>
-                        <Text style={styles.textBox}>Description: {capsuleData.description}</Text>
-                        <Text style={styles.textBox}>Rating: {capsuleData.rating}/5</Text>
+                        <StarRating 
+                            rating={rating}
+                            onChange={setRating}
+                        />
+                        <Text>Give the capsule your own rating.</Text>
                     </View>
                 ) : (
                     <Text>Capsule not found.</Text>
