@@ -1,5 +1,12 @@
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useState, useEffect, useContext } from "react";
+import { app, database } from "../../config/firebase.js"
+import { collection, setDoc, doc, getDoc } from "firebase/firestore";
+import uuid from 'react-native-uuid'
+import * as ImagePicker from "expo-image-picker";
+import { storage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, listAll } from "firebase/storage";
+
 
 import { StatusContext } from "../../context/generalContext.js";
 import PastafarianImage from "../../assets/pastafariantemp.png";
@@ -11,58 +18,177 @@ import PastafarianImage from "../../assets/pastafariantemp.png";
 export const Profile = ({ navigation, route }) => {
   const statusContext = useContext(StatusContext);
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  function updateName() {
-    console.log("updateName()");
-    console.log(name);
+
+
+  useEffect( () => {
+
+     const fetchData = async () => {
+      try {
+        const userRef = doc(database, "users", statusContext.currentUser.uid);
+        const userDoc = await getDoc(userRef);
+  
+        if(userDoc.exists()){
+          const userData = userDoc.data();
+          const storage = getStorage();
+          let profileImageURL;
+          if(userData.profileImage !== ""){
+            profileImageURL = await getDownloadURL(ref(storage, `profile_images/${userData.profileImage}`));
+          }
+          console.log(profileImageURL);
+          const name = userData.name;
+
+          if(profileImageURL !== undefined){
+            console.log("Image found. Using user image.");
+
+            setImageSrc(profileImageURL);
+
+          } else {
+            console.log("Image not found. Using template image.");
+
+            const imageRef = ref(storage, "profile_images/temporaryImageProfile.jpg");
+            await getDownloadURL(imageRef)
+              .then((templateImage) => {
+                setImageSrc(templateImage);
+                setLoading(false);
+              })
+              .catch((error) => {
+                console.error("Error getting download URL:", error);
+              });
+            }
+
+            if(name !== ""){
+              console.log("Name found. Updating name.");
+              setName(name);
+            } else {
+              setName("Insert name...");
+              console.log("Name not found. Using template name.");
+            }
+        }
+       } catch(error){
+          console.error(error);
+       }
+     }
+     setLoading(false);
+     fetchData();
+  }, []);
+
+   async function changeImage(){
+      console.log("changeImage()");
+      
+      const image = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+      });
+
+      if (!image.canceled){
+        setImageSrc(image.assets[0].uri);
+      } else {
+        console.log("No image found.");
+      }
+   }
+
+  async function saveChanges() {
+    console.log("saveChanges()");
+
+    const res = await fetch(imageSrc);
+    const blob = await res.blob();
+    const newId = uuid.v4();
+    let storageRef;
+    let storage = getStorage();
+    
+    try {
+      storageRef = ref(storage, `/profile_images/${newId}`);
+    } catch(error){
+      console.log(error)
+    }
+    
+    await uploadBytes(storageRef, blob);
+    
+    const userRef = doc(database, "users", statusContext.currentUser.uid);
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.data();
+    const fileRef = ref(storage, `/profile_images/${userData.profileImage}`);
+
+    if(userData.profileImage !== ""){
+      console.log(fileRef);
+
+      deleteObject(fileRef).then(() => {
+        console.log("Image deleted successfully")
+      }).catch((error) => {
+        console.error(error);
+      });    
+  
+    }
+
+    try {
+      await setDoc(userRef, {name: name, profileImage: newId}, {merge: true});
+      console.log("Info updated successfully.");
+    } catch(error){
+      console.log(error);
+    }
+
   }
 
-  function updatePassword() {
-    console.log("updatePassword()");
-
-    console.log(password);
-    console.log(confirmPassword);
-  }
-
+  
   function deleteProfile(){
     console.log("deleteProfile()");
+
+    statusContext.currentUser.delete().then(async () => {
+      console.log("Profile succesfully deleted")
+
+      // her
+      const userRef = doc(database, "users", statusContext.currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+      const fileRef = ref(storage, `/profile_images/${userData.profileImage}`);
+
+      if(userData.profileImage !== ""){
+        console.log(fileRef);
+
+      deleteObject(fileRef).then(() => {
+        console.log("Image deleted successfully")
+      }).catch((error) => {
+        console.error(error);
+      })       
+    }
+
+      navigation.navigate("IntroScreen");
+    }).catch((error) => {
+      console.error(error);
+    })
   }
 
   return (
     <View style={styles.container}>
+      
+      {loading ? (
+                <Text>Loading...</Text>
+            ) : (
       <View style={styles.profileImageBox}>
         <TouchableOpacity style={styles.profile}>
-          <Image source={PastafarianImage} style={styles.profileImage} />
+          <Image source={{ uri: imageSrc }} style={styles.profileImage} />
         </TouchableOpacity>
 
-        <Text style={styles.profileText}>helga@localhost.com</Text>
-
-        <TextInput style={styles.profileText} onChangeText={(name) => setName(name)}>
-          Helga, the Mighty Pastafarian
+        <TextInput style={styles.profileText} value={name} onChangeText={(name) => setName(name)}>
         </TextInput>
-        <TouchableOpacity onPress={updateName}>
-          <Text style={styles.profileButton}>Update name</Text>
+
+        <TouchableOpacity onPress={changeImage}>
+          <Text style={styles.profileButton}>Skift billede</Text>
         </TouchableOpacity>
-
-        <TextInput style={styles.profileText} onChangeText={(password) => setPassword(password)}>
-          Password
-        </TextInput>
-        <TextInput
-          style={styles.profileText}
-          onChangeText={(confirmPassword) => setConfirmPassword(confirmPassword)}
-        >
-          Confirm password
-        </TextInput>
-        <TouchableOpacity onPress={updatePassword}>
-          <Text style={styles.profileButton}>Update password</Text>
+            
+              
+        <TouchableOpacity onPress={saveChanges}>
+          <Text style={styles.profileButton}>Save changes</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={deleteProfile}>
           <Text style={styles.profileButton}>Delete profile</Text>
         </TouchableOpacity>
       </View>
+      )
+    }
     </View>
   );
 };
@@ -87,9 +213,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   profileImage: {
-    flex: 1,
+    height: '100%',
+    width: '100%',
     borderRadius: 75,
-    resizeMode: "contain",
+    resizeMode: "stretch",
   },
   profileImageBox: {
     flex: 0,

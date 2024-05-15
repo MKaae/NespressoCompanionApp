@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   //       const storageRef = ref(storage);
   //       const result = await listAll(storageRef);
   //       const capsulesData = await Promise.all(result.items.map(async (itemRef, index) => {
-  //         const imgURL = await getDownloadURL(itemRef);
+  //         const imgURL = await getDownloadURL(itemRef); 
   //         const capsule_name = itemRef.name.split(".")[0];
   //         return {
   //           id: index, // Use the index as the ID
