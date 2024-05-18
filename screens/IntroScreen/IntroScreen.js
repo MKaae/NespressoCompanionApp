@@ -40,7 +40,7 @@ export const IntroScreen = ({ navigation, route }) => {
           <Text style={styles.introText}>Welcome to the Nespresso Companion App</Text>
         </View>
         <View style={{marginTop: 200}}>
-          <TouchableOpacity onPress={signupRoute}>
+          <TouchableOpacity onPress={loginRoute}>
             <Text style={styles.btn}>LOGIN</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={signupRoute}>
