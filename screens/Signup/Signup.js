@@ -110,16 +110,12 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 10,
   },
-  inputHeader: {
-    fontSize: 20,
-    color: "white",
-  },
   btn: {
     fontSize: 20,
     textAlign: "center",
     color: "black",
     backgroundColor: "#E5CDA0",
-    paddingVertical: 5, 
+    paddingVertical: 5,
     paddingHorizontal: 85,
     marginTop: 10,
     borderRadius: 20,
