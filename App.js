@@ -12,6 +12,7 @@ import { CapsuleScreen } from "./screens/CapsuleScreen/CapsuleScreen.js";
 import { CapsuleRating } from "./screens/CapsuleRating/CapsuleRating.js";
 import { Profile } from "./screens/Profile/Profile.js";
 import { Stores } from "./screens/Stores/Stores.js";
+import Toast from 'react-native-toast-message';
 
 import StatusContextProvider from "./context/generalContext.js";
 
@@ -33,6 +34,7 @@ export default function App() {
         <Stack.Screen name="Stores" component={Stores} />
       </Stack.Navigator>
     </NavigationContainer>
+    <Toast />
     </StatusContextProvider>
   );
 }

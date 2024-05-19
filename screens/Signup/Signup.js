@@ -12,6 +12,7 @@ import { initializeAuth, getReactNativePersistence, signOut } from "firebase/aut
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 import { collection, setDoc, doc } from "firebase/firestore"
+import Toast from 'react-native-toast-message';
 
 
 
@@ -53,6 +54,7 @@ export const Signup = ({ navigation, route }) => {
       signupToLoginRoute();
     } catch (error) {
       console.log(error);
+      showToast();
 
     }
   }
@@ -60,6 +62,13 @@ export const Signup = ({ navigation, route }) => {
   function signupToLoginRoute() {
     console.log("signupToLoginRoute()");
     navigation.navigate("Login");
+  }
+
+  const showToast = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Email already in use'
+    });
   }
 
   return (
