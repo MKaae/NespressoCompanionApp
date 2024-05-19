@@ -10,6 +10,8 @@ import { getStorage, listAll } from "firebase/storage";
 
 import { StatusContext } from "../../context/generalContext.js";
 import PastafarianImage from "../../assets/pastafariantemp.png";
+import LoadingDots from "react-native-loading-dots";
+import Toast from 'react-native-toast-message';
 
 export const Profile = ({ navigation, route }) => {
   const statusContext = useContext(StatusContext);
@@ -115,7 +117,7 @@ export const Profile = ({ navigation, route }) => {
       }).catch((error) => {
         console.error(error);
       });    
-  
+      showToast();
     }
 
     try {
@@ -158,11 +160,20 @@ export const Profile = ({ navigation, route }) => {
     }
   }
 
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Updated profile information.'
+    });
+  }
+
   return (
     <View style={styles.container}>
       
       {!!loading ? (
-          <Text>Loading...</Text>
+          <View>
+            <LoadingDots />
+          </View>
       ) : (
       <View style={styles.profileImageBox}>
         <TouchableOpacity style={styles.profile}>

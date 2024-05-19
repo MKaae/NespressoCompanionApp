@@ -5,6 +5,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { doc, getDoc } from "firebase/firestore";
 import StarRating from "react-native-star-rating-widget";
 import { StatusContext } from "../../context/generalContext.js";
+import LoadingDots from "react-native-loading-dots";
 
 export const CapsuleRating = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -74,7 +75,9 @@ export const CapsuleRating = ({ navigation, route }) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {loading && ( 
-                <Text>Loading...</Text>
+                <View>
+                    <LoadingDots />
+                </View>
             )}
     
             {ratedCapsules.length === 0 && !loading && ( 

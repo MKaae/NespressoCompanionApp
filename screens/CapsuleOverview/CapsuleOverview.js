@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { collection, setDoc, doc, getDocs } from "firebase/firestore";
 import { app, database } from "../../config/firebase.js";
+import LoadingDots from "react-native-loading-dots";
 
 
 export const CapsuleOverview = ({navigation, route}) => {
@@ -44,7 +45,9 @@ export const CapsuleOverview = ({navigation, route}) => {
       />
       <ScrollView contentContainerStyle={styles.iconBoxContainer}> 
       {loading ? (
-          <Text>Loading...</Text>
+          <View>
+            <LoadingDots />
+          </View>
         ) : (
           capsules[0].capsules.map((capsule, index) => (
             <View key={index}>
