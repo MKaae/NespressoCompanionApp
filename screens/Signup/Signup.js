@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, ImageBackground, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { app, database } from "../../config/firebase.js";
 import {
@@ -16,12 +16,13 @@ import Toast from 'react-native-toast-message';
 
 
 
+
+import backgroundImage from "../../assets/intro-screen-bg.jpg";
+
 export const Signup = ({ navigation, route }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [userId, setUserId] = useState(null);
-
-
 
   useEffect(() => {
     const auth_ = getAuth();
@@ -36,25 +37,26 @@ export const Signup = ({ navigation, route }) => {
     return () => unsubscribe();
   }, []);
 
-
   async function signup() {
     console.log("signup()");
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
       const userId = userCredential.user.uid;
-      
+
       await setDoc(doc(database, "users", userId), {
         name: "",
         profileImage: "",
-        ratingArray: []
+        ratingArray: [],
       });
       // Create en collection -> med userCredential.user.uid - collectionNAVN
-      // Collection skal indeholde, navn: string, profilebillede: "" : profile_image/urltostorage, rating-array: [{capsule_id,int}] 
+      // Collection skal indeholde, navn: string, profilebillede: "" : profile_image/urltostorage, rating-array: [{capsule_id,int}]
       signupToLoginRoute();
     } catch (error) {
       console.log(error);
+
       showToast();
+
 
     }
   }
@@ -72,53 +74,65 @@ export const Signup = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputElementsSignup}>
-        <Text style={styles.emailPassword}>Email</Text>
-        <TextInput style={styles.textInputSignup} value={email} onChangeText={(text) => setEmail(text)} />
+    <ImageBackground source={backgroundImage} style={styles.container}>
+      <View>
+        <Text style={{ marginBottom: 40, textAlign: "center", fontSize: 30, color: "white" }}>
+          Sign up to the Nespresso Companion App
+        </Text>
       </View>
       <View style={styles.inputElementsSignup}>
-        <Text style={styles.emailPassword}>Password</Text>
         <TextInput
           style={styles.textInputSignup}
+          placeholder={"Email"}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+      </View>
+      <View style={styles.inputElementsSignup}>
+        <TextInput
+          style={styles.textInputSignup}
+          placeholder={"Password"}
           value={password}
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
       </View>
-      <View style={styles.buttonSignup}>
-        <Button title="Signup" onPress={signup} />
+      <View>
+        <TouchableOpacity onPress={signup}>
+          <Text style={styles.btn}>SIGNUP</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-  },
-  emailPassword: {
-    fontSize: 17,
   },
   inputElementsSignup: {
     flexDirection: "column",
     alignItems: "center",
   },
   textInputSignup: {
-    height: 40,
-    width: 150,
+    height: 45,
+    width: 250,
     backgroundColor: "white",
-    margin: 5,
+    margin: 7.5,
+    padding: 5,
     borderRadius: 10,
   },
-  buttonSignup: {
-    width: 150,
-    margin: 20,
-    borderRadius: 10,
-    overflow: "hidden",
+  btn: {
+    fontSize: 20,
+    textAlign: "center",
+    color: "black",
+    backgroundColor: "#E5CDA0",
+    paddingVertical: 5,
+    paddingHorizontal: 85,
+    marginTop: 10,
+    borderRadius: 20,
   },
 });

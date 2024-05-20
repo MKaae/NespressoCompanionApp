@@ -2,13 +2,11 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useState, useEffect, useContext } from "react";
 
 import PastafarianImage from "../../assets/pastafariantemp.png";
-import findStores from "../../assets/findStores.png";
-import seeCapsules from "../../assets/seeCapsules.png";
-import seeRatings from "../../assets/seeRatings.png";
-import updateProfile from "../../assets/updateProfile.png";
+import findStores from "../../assets/home/stores.jpg"
+import seeCapsules from "../../assets/home/seeCapsules.jpg";
+import seeRatings from "../../assets/home/seeRatings.jpg";
+import updateProfile from "../../assets/home/updateProfile.jpg";
 import { StatusContext } from "../../context/generalContext.js";
- 
-
 
 export const Home = ({ navigation, route }) => {
   const statusContext = useContext(StatusContext);
@@ -34,18 +32,8 @@ export const Home = ({ navigation, route }) => {
       <View style={styles.topRow}>
         <View style={styles.rowBox}>
           <View style={styles.textBox}>
-            {statusContext.currentUser && (
-              <>
-                <Text>{statusContext.currentUser.uid}</Text>
-              </>
-            )}
-            {!statusContext.currentUser && <Text>Du er ikke logget på</Text>}
-
-            <Text style={styles.homeText}>This is a textbox.</Text>
-            <Text style={styles.homeText}>This is a textbox.</Text>
-            <Text style={styles.homeText}>This is a textbox.</Text>
-            <Text style={styles.homeText}>This is a textbox.</Text>
-            <Text style={styles.homeText}>This is a textbox.</Text>
+            <Text style={styles.homeText}>Welcome to Nespresso 🖤</Text>
+            <Text style={styles.homeText}>Discover the coffee experience that best suits you.</Text>
           </View>
           <View style={styles.profileImageBox}>
             <TouchableOpacity onPress={profileRoute} style={styles.profile}>
@@ -88,7 +76,7 @@ export const Home = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
+    // backgroundColor: "lightblue",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -148,7 +136,10 @@ const styles = StyleSheet.create({
   },
   homeText: {
     margin: 2,
+    marginTop: 40,
     fontSize: 20,
+    textAlign: "center",
+
   },
   profileImageBox: {
     flex: 0,

@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, TextInput, Button, Platform } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Platform,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { app, database } from "../../config/firebase.js";
 import { addDoc, collection } from "firebase/firestore";
@@ -12,6 +21,8 @@ import { initializeAuth, getReactNativePersistence, signOut } from "firebase/aut
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusContext } from "../../context/generalContext.js";
 import Toast from 'react-native-toast-message';
+
+import backgroundImage from "../../assets/intro-screen-bg.jpg";
 
 export const Login = ({ navigation, route }) => {
   const [email, setEmail] = useState();
@@ -30,7 +41,7 @@ export const Login = ({ navigation, route }) => {
         statusContext.setCurrentUser(null);
       }
     });
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, []);
 
   async function login() {
@@ -57,53 +68,65 @@ export const Login = ({ navigation, route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputElementsLogin}>
-        <Text style={styles.emailPassword}>Email</Text>
-        <TextInput style={styles.textInputLogin} value={email} onChangeText={(text) => setEmail(text)} />
+    <ImageBackground source={backgroundImage} style={styles.container}>
+      <View>
+        <Text style={{ marginBottom: 40, textAlign: "center", fontSize: 30, color: "white" }}>
+          Login to the Nespresso Companion App
+        </Text>
       </View>
       <View style={styles.inputElementsLogin}>
-        <Text style={styles.emailPassword}>Password</Text>
         <TextInput
           style={styles.textInputLogin}
+          placeholder={"Email"}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+      </View>
+      <View style={styles.inputElementsLogin}>
+        <TextInput
+          style={styles.textInputLogin}
+          placeholder={"Password"}
           value={password}
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
       </View>
-      <View style={styles.buttonLogin}>
-        <Button title="Login" onPress={login} />
+      <View>
+        <TouchableOpacity onPress={login}>
+          <Text style={styles.btn}>LOGIN</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-  },
-  emailPassword: {
-    fontSize: 17,
   },
   inputElementsLogin: {
     flexDirection: "column",
     alignItems: "center",
   },
   textInputLogin: {
-    height: 40,
-    width: 150,
+    height: 45,
+    width: 250,
     backgroundColor: "white",
-    margin: 5,
+    margin: 7.5,
+    padding: 5,
     borderRadius: 10,
   },
-  buttonLogin: {
-    width: 150,
-    margin: 20,
-    borderRadius: 10,
-    overflow: "hidden",
+  btn: {
+    fontSize: 20,
+    textAlign: "center",
+    color: "black",
+    backgroundColor: "#E5CDA0",
+    paddingVertical: 5,
+    paddingHorizontal: 85,
+    marginTop: 10,
+    borderRadius: 20,
   },
 });
