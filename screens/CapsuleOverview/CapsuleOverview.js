@@ -5,20 +5,19 @@ import { collection, setDoc, doc, getDocs } from "firebase/firestore";
 import { app, database } from "../../config/firebase.js";
 import LoadingDots from "react-native-loading-dots";
 
-
-export const CapsuleOverview = ({navigation, route}) => {
+export const CapsuleOverview = ({ navigation, route }) => {
   const [text, setText] = useState();
   const [loading, setLoading] = useState(true);
   const [capsules, setCapsules] = useState([]);
 
   // Manuelt opret collection link til storage capsule_url: url, capsule_id: string, name: string, description: string, rating: double
-  // Fetch image collection with all capsules 
+  // Fetch image collection with all capsules
   useEffect(() => {
     const fetchData = async () => {
       try {
         const capsulesCollection = collection(database, "capsules");
         const capsulesSnapshot = await getDocs(capsulesCollection);
-        const capsulesData = capsulesSnapshot.docs.map(doc => doc.data());
+        const capsulesData = capsulesSnapshot.docs.map((doc) => doc.data());
         setCapsules(capsulesData);
         setLoading(false);
       } catch (error) {
@@ -30,35 +29,38 @@ export const CapsuleOverview = ({navigation, route}) => {
     fetchData();
   }, []);
 
-  function capsuleScreenRoute(id){
-    navigation.navigate("CapsuleScreen", {id: id});
+  function capsuleScreenRoute(id) {
+    navigation.navigate("CapsuleScreen", { id: id });
   }
 
   return (
     <View style={styles.container}>
-      <TextInput
+      {/* <TextInput
         value={text}
         onChangeText={setText}
         multiline={true}
         placeholder="Search here"
         style={styles.input}
-      />
-      <ScrollView contentContainerStyle={styles.iconBoxContainer}> 
-      {loading ? (
+      /> */}
+      <View style={styles.pageDescriptionView}>
+        <Text style={styles.pageHeader}>Nespresso Original</Text>
+        <Text style={styles.pageDescription}>Get inspired by our fellow coffee drinkers.</Text>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.iconBoxContainer}>
+        {loading ? (
           <View>
             <LoadingDots />
           </View>
         ) : (
           capsules[0].capsules.map((capsule, index) => (
-            <View key={index}>
+            <View key={index} style={styles.capsuleContainer}>
               <View style={styles.textContainer}>
-                <Text>{capsule.name}</Text>
-                <Text>{capsule.description}</Text>
+                <Text style={styles.capsuleName}>{capsule.name}</Text>
+                <Text style={styles.capsuleDescription}>{capsule.description}</Text>
               </View>
-              <TouchableOpacity
-                onPress={() => capsuleScreenRoute(capsule.id)}
-                style={styles.iconBox}
-              >
+
+              <TouchableOpacity onPress={() => capsuleScreenRoute(capsule.id)} style={styles.iconBox}>
                 <Image source={{ uri: capsule.img_url }} style={styles.img} />
               </TouchableOpacity>
             </View>
@@ -66,76 +68,93 @@ export const CapsuleOverview = ({navigation, route}) => {
         )}
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  pageDescriptionView: {
+    padding: 10,
+  },
+  pageHeader: {
+    fontWeight: "bold",
+    fontSize: 30,
+  },
   iconBoxContainer: {
-    minHeight: '100%',
-    backgroundColor: 'lightblue',
-    justifyContent: 'center',
-    alignItems: 'center',
+    minHeight: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
     height: 50,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     fontSize: 25,
   },
-  iconBox: {  
-    height: 300,
-    width: 300,
-    borderWidth: 1,
-    borderColor: 'black',
-    overflow: 'hidden',
-    borderRadius: 20,
+  iconBox: {
+    alignSelf: "center",
     margin: 30,
+    height: 150,
+    width: 150,
+    borderWidth: 1,
+    borderColor: "black",
+    overflow: "hidden",
+    borderRadius: 20,
   },
   img: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   textContainer: {
     flex: 0,
-    alignItems: 'center',
+    alignItems: "center",
     margin: 10,
-  }
+  },
+  capsuleContainer: {
+    backgroundColor: "#F4F1E0",
+    margin: 5,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 5,
+  },
+  capsuleName: {
+    fontWeight: "bold",
+    fontSize: 25,
+  },
+  capsuleDescription: {},
 });
 
+// THIS IS FOR YOU STEFFEN ONLY RUN ON YOUR COMPUTER THEN DELETE INSTANTLY
 
-
-// THIS IS FOR YOU STEFFEN ONLY RUN ON YOUR COMPUTER THEN DELETE INSTANTLY 
-
-  // useEffect(() => {
-  //   const fetchCapsules = async () => {
-  //     try {
-  //       const storage = getStorage();
-  //       const storageRef = ref(storage);
-  //       const result = await listAll(storageRef);
-  //       const capsulesData = await Promise.all(result.items.map(async (itemRef, index) => {
-  //         const imgURL = await getDownloadURL(itemRef); 
-  //         const capsule_name = itemRef.name.split(".")[0];
-  //         return {
-  //           id: index, // Use the index as the ID
-  //           name: capsule_name, // Set the name as required
-  //           flavor: "",
-  //           description: "", // Set the description as required
-  //           img_url: imgURL,
-  //           rating: 0 // Set the initial rating
-  //         };
-  //       }));
-  //       await setDoc(doc(collection(database, "capsules"), "allCapsules"), {
-  //         capsules: capsulesData
-  //       });
-  //       console.log("All capsules document created successfully!");
-  //     } catch (error) {
-  //       console.error("Error creating all capsules document:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //
-  //   fetchCapsules();
-  // }, []);
+// useEffect(() => {
+//   const fetchCapsules = async () => {
+//     try {
+//       const storage = getStorage();
+//       const storageRef = ref(storage);
+//       const result = await listAll(storageRef);
+//       const capsulesData = await Promise.all(result.items.map(async (itemRef, index) => {
+//         const imgURL = await getDownloadURL(itemRef);
+//         const capsule_name = itemRef.name.split(".")[0];
+//         return {
+//           id: index, // Use the index as the ID
+//           name: capsule_name, // Set the name as required
+//           flavor: "",
+//           description: "", // Set the description as required
+//           img_url: imgURL,
+//           rating: 0 // Set the initial rating
+//         };
+//       }));
+//       await setDoc(doc(collection(database, "capsules"), "allCapsules"), {
+//         capsules: capsulesData
+//       });
+//       console.log("All capsules document created successfully!");
+//     } catch (error) {
+//       console.error("Error creating all capsules document:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+//
+//   fetchCapsules();
+// }, []);

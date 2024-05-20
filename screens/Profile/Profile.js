@@ -35,16 +35,16 @@ export const Profile = ({ navigation, route }) => {
           if(userData.profileImage !== ""){
             profileImageURL = await getDownloadURL(ref(storage, `profile_images/${userData.profileImage}`));
           }
-          console.log(profileImageURL);
+          // console.log(profileImageURL);
           const name = userData.name;
 
           if(profileImageURL !== undefined){
-            console.log("Image found. Using user image.");
+            // console.log("Image found. Using user image.");
 
             setImageSrc(profileImageURL);
 
           } else {
-            console.log("Image not found. Using template image.");
+            // console.log("Image not found. Using template image.");
 
             const imageRef = ref(storage, "profile_images/temporaryImageProfile.jpg");
             await getDownloadURL(imageRef)
@@ -57,11 +57,11 @@ export const Profile = ({ navigation, route }) => {
             }
 
             if(name !== ""){
-              console.log("Name found. Updating name.");
+              // console.log("Name found. Updating name.");
               setName(name);
             } else {
               setName("Insert name...");
-              console.log("Name not found. Using template name.");
+              // console.log("Name not found. Using template name.");
             }
             setLoading(false);
         }
@@ -73,7 +73,7 @@ export const Profile = ({ navigation, route }) => {
   }, []);
 
    async function changeImage(){
-      console.log("changeImage()");
+      // console.log("changeImage()");
       
       const image = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
@@ -88,7 +88,7 @@ export const Profile = ({ navigation, route }) => {
 
   async function saveChanges() {
     setLoading(true);
-    console.log("saveChanges()");
+    // console.log("saveChanges()");
 
     const res = await fetch(imageSrc);
     const blob = await res.blob();
@@ -110,7 +110,7 @@ export const Profile = ({ navigation, route }) => {
     const fileRef = ref(storage, `/profile_images/${userData.profileImage}`);
 
     if(userData.profileImage !== ""){
-      console.log(fileRef);
+      // console.log(fileRef);
 
       deleteObject(fileRef).then(() => {
         console.log("Image deleted successfully")
@@ -131,7 +131,7 @@ export const Profile = ({ navigation, route }) => {
 
   
   async function deleteProfile() {
-    console.log("deleteProfile()");
+    // console.log("deleteProfile()");
   
     try {
       const storage = getStorage();
@@ -140,17 +140,17 @@ export const Profile = ({ navigation, route }) => {
       const userData = userDoc.data();
       const fileRef = ref(storage, `/profile_images/${userData.profileImage}`);
       
-      console.log("Deleting profile image...");
+      // console.log("Deleting profile image...");
       await deleteObject(fileRef);
-      console.log("Profile image deleted successfully");
+      // console.log("Profile image deleted successfully");
   
-      console.log("Deleting user document...");
+      // console.log("Deleting user document...");
       await deleteDoc(userRef);
-      console.log("User document deleted successfully");
+      // console.log("User document deleted successfully");
 
-      console.log("Deleting user from Authentication...");
+      // console.log("Deleting user from Authentication...");
       await statusContext.currentUser.delete();
-      console.log("User deleted from Authentication successfully");
+      // console.log("User deleted from Authentication successfully");
   
       navigation.navigate("IntroScreen");
       } catch (error) {
@@ -184,7 +184,7 @@ export const Profile = ({ navigation, route }) => {
         </TextInput>
 
         <TouchableOpacity onPress={changeImage}>
-          <Text style={styles.profileButton}>Skift billede</Text>
+          <Text style={styles.profileButton}>Change image</Text>
         </TouchableOpacity>
             
               
@@ -205,12 +205,12 @@ export const Profile = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
     padding: 20,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   profile: {
+    marginTop: 50,
     flex: 0,
     height: 125,
     width: 125,
@@ -241,15 +241,11 @@ const styles = StyleSheet.create({
   profileButton: {
     fontSize: 20,
     textAlign: "center",
-    color: "white",
-    backgroundColor: "black",
-    borderWidth: 2,
+    color: "black",
+    backgroundColor: "#E5CDA0",
+    paddingVertical: 5,
+    paddingHorizontal: 85,
+    marginTop: 10,
     borderRadius: 20,
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderColor: "black",
-    marginTop: 20,
   },
 });

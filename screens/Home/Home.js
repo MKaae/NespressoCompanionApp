@@ -1,14 +1,71 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useState, useEffect, useContext } from "react";
+import { app, database } from "../../config/firebase.js";
+import { collection, setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { getStorage, listAll } from "firebase/storage";
+import { storage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
 import PastafarianImage from "../../assets/pastafariantemp.png";
-import findStores from "../../assets/home/stores.jpg"
+import findStores from "../../assets/home/stores.jpg";
 import seeCapsules from "../../assets/home/seeCapsules.jpg";
 import seeRatings from "../../assets/home/seeRatings.jpg";
 import updateProfile from "../../assets/home/updateProfile.jpg";
 import { StatusContext } from "../../context/generalContext.js";
 
 export const Home = ({ navigation, route }) => {
+  const [imageSrc, setImageSrc] = useState();
+  const [name, setName] = useState("");
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userRef = doc(database, "users", statusContext.currentUser.uid);
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const storage = getStorage();
+
+          let profileImageURL;
+          if (userData.profileImage !== "") {
+            profileImageURL = await getDownloadURL(ref(storage, `profile_images/${userData.profileImage}`));
+          }
+          // console.log(profileImageURL);
+          const name = userData.name;
+
+          if (profileImageURL !== undefined) {
+            // console.log("Image found. Using user image.");
+
+            setImageSrc(profileImageURL);
+          } else {
+            // console.log("Image not found. Using template image.");
+
+            const imageRef = ref(storage, "profile_images/temporaryImageProfile.jpg");
+            await getDownloadURL(imageRef)
+              .then((templateImage) => {
+                setImageSrc(templateImage);
+              })
+              .catch((error) => {
+                console.error("Error getting download URL:", error);
+              });
+          }
+
+          if (name !== "") {
+            // console.log("Name found. Updating name.");
+            setName(name);
+          } else {
+            setName("Insert name...");
+            // console.log("Name not found. Using template name.");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const statusContext = useContext(StatusContext);
 
   function capsuleOverViewRoute() {
@@ -37,9 +94,9 @@ export const Home = ({ navigation, route }) => {
           </View>
           <View style={styles.profileImageBox}>
             <TouchableOpacity onPress={profileRoute} style={styles.profile}>
-              <Image source={PastafarianImage} style={styles.profileImage} />
+              <Image source={{uri: imageSrc}} style={styles.profileImage} />
             </TouchableOpacity>
-            <Text style={styles.profileText}>Welcome Helga, the Mighty Pastafarian !</Text>
+            <Text style={styles.profileText}>{name}</Text>
           </View>
         </View>
       </View>
@@ -76,7 +133,6 @@ export const Home = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "lightblue",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -98,9 +154,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   profileImage: {
-    flex: 1,
+    height: '100%',
+    width: '100%',
     borderRadius: 75,
-    resizeMode: "contain",
+    resizeMode: "stretch",
   },
   topRow: {
     flex: 1,
@@ -139,7 +196,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     fontSize: 20,
     textAlign: "center",
-
   },
   profileImageBox: {
     flex: 0,
