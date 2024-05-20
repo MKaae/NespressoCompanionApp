@@ -20,6 +20,7 @@ import {
 import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusContext } from "../../context/generalContext.js";
+import Toast from 'react-native-toast-message';
 
 import backgroundImage from "../../assets/intro-screen-bg.jpg";
 
@@ -49,12 +50,21 @@ export const Login = ({ navigation, route }) => {
       const newAuth = getAuth();
       const userCredential = await signInWithEmailAndPassword(newAuth, email, password);
       loginAndRouteToHome();
-    } catch (error) {}
+    } catch (error) {
+      showToast();
+    }
   }
 
   function loginAndRouteToHome() {
     console.log("loginAndRouteToHome()");
     navigation.navigate("Home");
+  }
+
+  const showToast = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Password or username incorrect'
+    });
   }
 
   return (

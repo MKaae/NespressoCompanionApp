@@ -1,7 +1,7 @@
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { app, database } from "../../config/firebase.js"
-import { collection, setDoc, doc, getDoc } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
 import uuid from 'react-native-uuid'
 import * as ImagePicker from "expo-image-picker";
 import { storage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
@@ -10,15 +10,13 @@ import { getStorage, listAll } from "firebase/storage";
 
 import { StatusContext } from "../../context/generalContext.js";
 import PastafarianImage from "../../assets/pastafariantemp.png";
-
-// fetch bruger informationer
-// post updateDoc -> nye informationer
-// target profile_images i storage
+import LoadingDots from "react-native-loading-dots";
+import Toast from 'react-native-toast-message';
 
 export const Profile = ({ navigation, route }) => {
   const statusContext = useContext(StatusContext);
   const [name, setName] = useState("");
-  const [imageSrc, setImageSrc] = useState("");
+  const [imageSrc, setImageSrc] = useState();
   const [loading, setLoading] = useState(true);
 
 
@@ -52,7 +50,6 @@ export const Profile = ({ navigation, route }) => {
             await getDownloadURL(imageRef)
               .then((templateImage) => {
                 setImageSrc(templateImage);
-                setLoading(false);
               })
               .catch((error) => {
                 console.error("Error getting download URL:", error);
@@ -66,12 +63,12 @@ export const Profile = ({ navigation, route }) => {
               setName("Insert name...");
               console.log("Name not found. Using template name.");
             }
+            setLoading(false);
         }
        } catch(error){
           console.error(error);
        }
      }
-     setLoading(false);
      fetchData();
   }, []);
 
@@ -90,6 +87,7 @@ export const Profile = ({ navigation, route }) => {
    }
 
   async function saveChanges() {
+    setLoading(true);
     console.log("saveChanges()");
 
     const res = await fetch(imageSrc);
@@ -119,7 +117,7 @@ export const Profile = ({ navigation, route }) => {
       }).catch((error) => {
         console.error(error);
       });    
-  
+      showToast();
     }
 
     try {
@@ -128,44 +126,55 @@ export const Profile = ({ navigation, route }) => {
     } catch(error){
       console.log(error);
     }
-
+    setLoading(false);
   }
 
   
-  function deleteProfile(){
+  async function deleteProfile() {
     console.log("deleteProfile()");
-
-    statusContext.currentUser.delete().then(async () => {
-      console.log("Profile succesfully deleted")
-
-      // her
+  
+    try {
+      const storage = getStorage();
       const userRef = doc(database, "users", statusContext.currentUser.uid);
       const userDoc = await getDoc(userRef);
       const userData = userDoc.data();
       const fileRef = ref(storage, `/profile_images/${userData.profileImage}`);
+      
+      console.log("Deleting profile image...");
+      await deleteObject(fileRef);
+      console.log("Profile image deleted successfully");
+  
+      console.log("Deleting user document...");
+      await deleteDoc(userRef);
+      console.log("User document deleted successfully");
 
-      if(userData.profileImage !== ""){
-        console.log(fileRef);
-
-      deleteObject(fileRef).then(() => {
-        console.log("Image deleted successfully")
-      }).catch((error) => {
-        console.error(error);
-      })       
-    }
-
+      console.log("Deleting user from Authentication...");
+      await statusContext.currentUser.delete();
+      console.log("User deleted from Authentication successfully");
+  
       navigation.navigate("IntroScreen");
-    }).catch((error) => {
+      } catch (error) {
       console.error(error);
-    })
+
+
+    }
+  }
+
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Updated profile information.'
+    });
   }
 
   return (
     <View style={styles.container}>
       
-      {loading ? (
-                <Text>Loading...</Text>
-            ) : (
+      {!!loading ? (
+          <View>
+            <LoadingDots />
+          </View>
+      ) : (
       <View style={styles.profileImageBox}>
         <TouchableOpacity style={styles.profile}>
           <Image source={{ uri: imageSrc }} style={styles.profileImage} />
@@ -198,8 +207,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "lightblue",
     padding: 20,
-    justifyContent: "start",
-    alignItems: "start",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profile: {
     flex: 0,

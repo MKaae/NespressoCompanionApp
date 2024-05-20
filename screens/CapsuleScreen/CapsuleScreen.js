@@ -5,6 +5,7 @@ import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { collection, setDoc, doc, getDoc } from "firebase/firestore";
 import StarRating from "react-native-star-rating-widget";
 import { StatusContext } from "../../context/generalContext.js";
+import LoadingDots from "react-native-loading-dots";
 
 export const CapsuleScreen = ({navigation, route}) => {
     const [loading, setLoading] = useState(true);
@@ -87,7 +88,9 @@ export const CapsuleScreen = ({navigation, route}) => {
     return (
         <View style={styles.container}>
             {loading ? (
-                <Text>Loading...</Text>
+                <View>
+                    <LoadingDots />
+                </View>
             ) : (
                 capsuleData ? (
                     <View style={styles.contentContainer}>
