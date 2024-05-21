@@ -6,15 +6,19 @@ import { app } from "../../config/firebase.js";
 import { getAuth } from "firebase/auth";
 
 let auth;
+
 if (Platform.OS === "web") {
   auth = getAuth(app);
 } else {
-  if (!getAuth().app) {
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
-  } else {
+  // Check if auth is already initialized to avoid multiple initializations
+  try {
     auth = getAuth(app);
+  } catch (error) {
+    if (error.code === 'auth/already-initialized') {
+      auth = initializeAuth(app, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+      });
+    }
   }
 }
 

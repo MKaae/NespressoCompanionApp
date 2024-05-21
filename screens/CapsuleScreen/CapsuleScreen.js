@@ -42,7 +42,9 @@ export const CapsuleScreen = ({ navigation, route }) => {
           const capsuleId = route.params.id;
           if (Array.isArray(ratingsArray) && ratingsArray.length > 0) {
             const capsuleRating = ratingsArray.find((item) => item.id === capsuleId);
-            setRating(capsuleRating.rating);
+            if (capsuleRating !== undefined) {
+              setRating(capsuleRating.rating);
+            }
           } else {
             console.log("User's ratings array is empty.");
           }
