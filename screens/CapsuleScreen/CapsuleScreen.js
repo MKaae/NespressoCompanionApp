@@ -1,10 +1,9 @@
+import { StatusContext } from "../../context/generalContext.js";
 import { View, Text, StyleSheet, Image } from "react-native";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import StarRating from "react-native-star-rating-widget";
 import { useState, useEffect, useContext } from "react";
 import { database } from "../../config/firebase.js";
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
-import { collection, setDoc, doc, getDoc } from "firebase/firestore";
-import StarRating from "react-native-star-rating-widget";
-import { StatusContext } from "../../context/generalContext.js";
 import LoadingDots from "react-native-loading-dots";
 
 export const CapsuleScreen = ({ navigation, route }) => {
@@ -41,11 +40,8 @@ export const CapsuleScreen = ({ navigation, route }) => {
           const userData = userDoc.data();
           const ratingsArray = userData.ratingArray;
           const capsuleId = route.params.id;
-          // console.log(userData);
-          console.log(capsuleData);
           if (Array.isArray(ratingsArray) && ratingsArray.length > 0) {
             const capsuleRating = ratingsArray.find((item) => item.id === capsuleId);
-            // console.log(capsuleRating)
             setRating(capsuleRating.rating);
           } else {
             console.log("User's ratings array is empty.");
@@ -75,7 +71,6 @@ export const CapsuleScreen = ({ navigation, route }) => {
           ratingsArray.push({ id: capsuleId, rating: rating });
         }
         await setDoc(userRef, { ratingArray: ratingsArray }, { merge: true });
-        console.log("Rating updated successfully!");
       } else {
         console.error("User document not found.");
       }
@@ -94,7 +89,7 @@ export const CapsuleScreen = ({ navigation, route }) => {
         <View style={styles.contentContainer}>
           <Text style={styles.capsuleHeader}>{capsuleData.name}</Text>
           <Text style={styles.textBox}>{capsuleData.description}</Text>
-          
+
           <View style={styles.imgContainer}>
             <Image source={{ uri: capsuleData.img_url }} style={styles.img} />
           </View>
@@ -116,7 +111,6 @@ export const CapsuleScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'lightblue',
     justifyContent: "start",
     alignItems: "center",
     marginTop: 50,

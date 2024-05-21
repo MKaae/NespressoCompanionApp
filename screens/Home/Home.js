@@ -1,21 +1,18 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { useState, useEffect, useContext } from "react";
-import { app, database } from "../../config/firebase.js";
-import { collection, setDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { getStorage, listAll } from "firebase/storage";
-import { storage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
-
-import PastafarianImage from "../../assets/pastafariantemp.png";
-import findStores from "../../assets/home/stores.jpg";
-import seeCapsules from "../../assets/home/seeCapsules.jpg";
-import seeRatings from "../../assets/home/seeRatings.jpg";
 import updateProfile from "../../assets/home/updateProfile.jpg";
 import { StatusContext } from "../../context/generalContext.js";
+import seeCapsules from "../../assets/home/seeCapsules.jpg";
+import seeRatings from "../../assets/home/seeRatings.jpg";
+import { useState, useEffect, useContext } from "react";
+import { ref, getDownloadURL } from "firebase/storage";
+import findStores from "../../assets/home/stores.jpg";
+import { database } from "../../config/firebase.js";
+import { doc, getDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 export const Home = ({ navigation, route }) => {
   const [imageSrc, setImageSrc] = useState();
   const [name, setName] = useState("");
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,16 +28,11 @@ export const Home = ({ navigation, route }) => {
           if (userData.profileImage !== "") {
             profileImageURL = await getDownloadURL(ref(storage, `profile_images/${userData.profileImage}`));
           }
-          // console.log(profileImageURL);
           const name = userData.name;
 
           if (profileImageURL !== undefined) {
-            // console.log("Image found. Using user image.");
-
             setImageSrc(profileImageURL);
           } else {
-            // console.log("Image not found. Using template image.");
-
             const imageRef = ref(storage, "profile_images/temporaryImageProfile.jpg");
             await getDownloadURL(imageRef)
               .then((templateImage) => {
@@ -52,11 +44,9 @@ export const Home = ({ navigation, route }) => {
           }
 
           if (name !== "") {
-            // console.log("Name found. Updating name.");
             setName(name);
           } else {
             setName("Insert name...");
-            // console.log("Name not found. Using template name.");
           }
         }
       } catch (error) {
@@ -94,7 +84,7 @@ export const Home = ({ navigation, route }) => {
           </View>
           <View style={styles.profileImageBox}>
             <TouchableOpacity onPress={profileRoute} style={styles.profile}>
-              <Image source={{uri: imageSrc}} style={styles.profileImage} />
+              <Image source={{ uri: imageSrc }} style={styles.profileImage} />
             </TouchableOpacity>
             <Text style={styles.profileText}>{name}</Text>
           </View>
@@ -154,8 +144,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   profileImage: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
     borderRadius: 75,
     resizeMode: "stretch",
   },
