@@ -1,18 +1,14 @@
-import { View, Text, StyleSheet, Button, Platform, ImageBackground, TouchableOpacity } from "react-native";
-import { app, database } from "../../config/firebase.js";
-// import { StatusContext } from "../../context/generalContext.js";
-
-import { getAuth } from "firebase/auth";
+import { View, Text, StyleSheet, Platform, ImageBackground, TouchableOpacity } from "react-native";
 import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-
 import backgroundImage from "../../assets/intro-screen-bg.jpg";
+import { app } from "../../config/firebase.js";
+import { getAuth } from "firebase/auth";
 
 let auth;
 if (Platform.OS === "web") {
   auth = getAuth(app);
 } else {
-  // Check if auth has already been initialized to avoid re-initializing
   if (!getAuth().app) {
     auth = initializeAuth(app, {
       persistence: getReactNativePersistence(ReactNativeAsyncStorage),
@@ -32,14 +28,12 @@ export const IntroScreen = ({ navigation, route }) => {
   }
 
   return (
-    // <StatusContext.Provider value={{ currentUser: null }}>
-
     <ImageBackground source={backgroundImage} style={styles.container}>
       <View>
         <View>
           <Text style={styles.introText}>Welcome to the Nespresso Companion App</Text>
         </View>
-        <View style={{marginTop: 200}}>
+        <View style={{ marginTop: 200 }}>
           <TouchableOpacity onPress={loginRoute}>
             <Text style={styles.btn}>LOGIN</Text>
           </TouchableOpacity>
@@ -49,7 +43,6 @@ export const IntroScreen = ({ navigation, route }) => {
         </View>
       </View>
     </ImageBackground>
-    // </StatusContext.Provider>
   );
 };
 
