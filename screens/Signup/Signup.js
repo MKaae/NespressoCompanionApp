@@ -1,23 +1,10 @@
-import { View, Text, StyleSheet, TextInput, Button, ImageBackground, TouchableOpacity } from "react-native";
-import { useState, useEffect } from "react";
-import { app, database } from "../../config/firebase.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-
-import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { Platform } from "react-native";
-import { collection, setDoc, doc } from "firebase/firestore"
-import Toast from 'react-native-toast-message';
-
-
-
-
+import { View, Text, StyleSheet, TextInput, ImageBackground, TouchableOpacity } from "react-native";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import backgroundImage from "../../assets/intro-screen-bg.jpg";
+import { database } from "../../config/firebase.js";
+import { setDoc, doc } from "firebase/firestore";
+import Toast from "react-native-toast-message";
+import { useState, useEffect } from "react";
 
 export const Signup = ({ navigation, route }) => {
   const [email, setEmail] = useState();
@@ -38,7 +25,6 @@ export const Signup = ({ navigation, route }) => {
   }, []);
 
   async function signup() {
-    console.log("signup()");
     try {
       const newAuth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(newAuth, email, password);
@@ -56,22 +42,19 @@ export const Signup = ({ navigation, route }) => {
       console.log(error);
 
       showToast();
-
-
     }
   }
 
   function signupToLoginRoute() {
-    console.log("signupToLoginRoute()");
     navigation.navigate("Login");
   }
 
   const showToast = () => {
     Toast.show({
-      type: 'error',
-      text1: 'Email already in use'
+      type: "error",
+      text1: "Email already in use",
     });
-  }
+  };
 
   return (
     <ImageBackground source={backgroundImage} style={styles.container}>
