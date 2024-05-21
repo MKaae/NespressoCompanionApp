@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { useState } from "react";
 import { Divider } from "react-native-elements";
+import { useState } from "react";
 
 export const Stores = ({ navigation, route }) => {
   const [region, setRegion] = useState({
@@ -47,7 +47,7 @@ export const Stores = ({ navigation, route }) => {
         </MapView>
       </View>
       <View style={styles.locationContainer}>
-      <Text style={{ margin: 10 }}>
+        <Text style={{ margin: 10 }}>
           <Divider orientation="vertical" width={325} style={{ padding: 1 }} />
         </Text>
         <TouchableOpacity
@@ -73,11 +73,11 @@ export const Stores = ({ navigation, route }) => {
           <Text>Rødovre Centrum 1M. St 38</Text>
           <Text>Rødovre</Text>
         </TouchableOpacity>
-        
+
         <Text style={{ margin: 10 }}>
           <Divider orientation="vertical" width={325} style={{ padding: 1 }} />
         </Text>
-        
+
         <TouchableOpacity
           onPress={() => {
             moveToLocation(3);
@@ -91,7 +91,7 @@ export const Stores = ({ navigation, route }) => {
         <Text style={{ margin: 10 }}>
           <Divider orientation="vertical" width={325} style={{ padding: 1 }} />
         </Text>
-        
+
         <TouchableOpacity
           onPress={() => {
             moveToLocation(4);
@@ -109,7 +109,6 @@ export const Stores = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'lightblue',
   },
   mapContainer: {
     height: 300,
@@ -126,10 +125,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   divider: {
-    width: "100%", // Assuming you want it to span the full height
-    height: 4, // This makes it bold
+    width: "100%",
+    height: 4,
     color: "black",
-    backgroundColor: "black", // This makes it bold and visible
-    marginVertical: 20, // Optional: adds some vertical margin around the divider
+    backgroundColor: "black",
+    marginVertical: 20,
   },
 });

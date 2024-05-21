@@ -1,12 +1,10 @@
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, ScrollView, Image } from "react-native";
-import { useState, useEffect } from "react";
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
-import { collection, setDoc, doc, getDocs } from "firebase/firestore";
-import { app, database } from "../../config/firebase.js";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
+import { collection, getDocs } from "firebase/firestore";
+import { database } from "../../config/firebase.js";
 import LoadingDots from "react-native-loading-dots";
+import { useState, useEffect } from "react";
 
 export const CapsuleOverview = ({ navigation, route }) => {
-  const [text, setText] = useState();
   const [loading, setLoading] = useState(true);
   const [capsules, setCapsules] = useState([]);
 
@@ -35,13 +33,6 @@ export const CapsuleOverview = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {/* <TextInput
-        value={text}
-        onChangeText={setText}
-        multiline={true}
-        placeholder="Search here"
-        style={styles.input}
-      /> */}
       <View style={styles.pageDescriptionView}>
         <Text style={styles.pageHeader}>Nespresso Original</Text>
         <Text style={styles.pageDescription}>Get inspired by our fellow coffee drinkers.</Text>
@@ -124,37 +115,3 @@ const styles = StyleSheet.create({
   },
   capsuleDescription: {},
 });
-
-// THIS IS FOR YOU STEFFEN ONLY RUN ON YOUR COMPUTER THEN DELETE INSTANTLY
-
-// useEffect(() => {
-//   const fetchCapsules = async () => {
-//     try {
-//       const storage = getStorage();
-//       const storageRef = ref(storage);
-//       const result = await listAll(storageRef);
-//       const capsulesData = await Promise.all(result.items.map(async (itemRef, index) => {
-//         const imgURL = await getDownloadURL(itemRef);
-//         const capsule_name = itemRef.name.split(".")[0];
-//         return {
-//           id: index, // Use the index as the ID
-//           name: capsule_name, // Set the name as required
-//           flavor: "",
-//           description: "", // Set the description as required
-//           img_url: imgURL,
-//           rating: 0 // Set the initial rating
-//         };
-//       }));
-//       await setDoc(doc(collection(database, "capsules"), "allCapsules"), {
-//         capsules: capsulesData
-//       });
-//       console.log("All capsules document created successfully!");
-//     } catch (error) {
-//       console.error("Error creating all capsules document:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//
-//   fetchCapsules();
-// }, []);

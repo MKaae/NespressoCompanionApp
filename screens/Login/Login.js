@@ -1,28 +1,9 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-  Platform,
-  ImageBackground,
-  TouchableOpacity,
-} from "react-native";
-import { useState, useEffect, useContext } from "react";
-import { app, database } from "../../config/firebase.js";
-import { addDoc, collection } from "firebase/firestore";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { initializeAuth, getReactNativePersistence, signOut } from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { View, Text, StyleSheet, TextInput, ImageBackground, TouchableOpacity } from "react-native";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { StatusContext } from "../../context/generalContext.js";
-import Toast from 'react-native-toast-message';
-
 import backgroundImage from "../../assets/intro-screen-bg.jpg";
+import { useState, useEffect, useContext } from "react";
+import Toast from "react-native-toast-message";
 
 export const Login = ({ navigation, route }) => {
   const [email, setEmail] = useState();
@@ -45,7 +26,6 @@ export const Login = ({ navigation, route }) => {
   }, []);
 
   async function login() {
-    console.log("login()");
     try {
       const newAuth = getAuth();
       const userCredential = await signInWithEmailAndPassword(newAuth, email, password);
@@ -56,16 +36,15 @@ export const Login = ({ navigation, route }) => {
   }
 
   function loginAndRouteToHome() {
-    console.log("loginAndRouteToHome()");
     navigation.navigate("Home");
   }
 
   const showToast = () => {
     Toast.show({
-      type: 'error',
-      text1: 'Password or username incorrect'
+      type: "error",
+      text1: "Password or username incorrect",
     });
-  }
+  };
 
   return (
     <ImageBackground source={backgroundImage} style={styles.container}>

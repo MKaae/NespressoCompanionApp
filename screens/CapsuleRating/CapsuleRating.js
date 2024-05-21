@@ -1,11 +1,11 @@
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { StatusContext } from "../../context/generalContext.js";
+import StarRating from "react-native-star-rating-widget";
 import { useState, useEffect, useContext } from "react";
 import { database } from "../../config/firebase.js";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { doc, getDoc } from "firebase/firestore";
-import StarRating from "react-native-star-rating-widget";
-import { StatusContext } from "../../context/generalContext.js";
 import LoadingDots from "react-native-loading-dots";
+import { doc, getDoc } from "firebase/firestore";
 import { Divider } from "react-native-elements";
 
 export const CapsuleRating = ({ navigation, route }) => {
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   container: {
     minHeight: "100%",
     padding: 10,
-    // backgroundColor: "lightblue",
     alignItems: "center",
     justifyContent: "center",
   },
